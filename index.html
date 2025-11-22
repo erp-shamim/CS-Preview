@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Service Complain Sheet</title>
+    <script src="/_sdk/element_sdk.js"></script>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --surface-color: #f8fafc;
+            --text-color: #0f172a;
+            --accent-color: #c41e3a;
+            --border-color: #e5e7eb;
+            --muted-text-color: #64748b;
+        }
+
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', 'Helvetica', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 9pt;
+            line-height: 1.35;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .page-break {
+                page-break-after: always;
+            }
+        }
+
+        .a4-page {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 8mm 10mm;
+            background: var(--bg-color);
+            position: relative;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+        }
+
+        /* HEADER */
+        .document-header {
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+
+        .company-name {
+            font-size: 16pt;
+            font-weight: bold;
+            color: var(--text-color);
+            margin: 0;
+            letter-spacing: 0.5px;
+        }
+
+        .company-address {
+            font-size: 8pt;
+            color: var(--muted-text-color);
+            margin: 2px 0;
+        }
+
+        .document-title {
+            font-size: 13pt;
+            font-weight: bold;
+            margin: 6px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .red-accent {
+            color: var(--accent-color);
+        }
+
+        /* SECTION TITLES */
+        .section-title {
+            background: var(--surface-color);
+            border: none;
+            border-left: 3px solid var(--accent-color);
+            padding: 5px 10px;
+            font-weight: bold;
+            font-size: 9.5pt;
+            margin: 10px 0 6px 0;
+            text-transform: uppercase;
+            border-radius: 8px;
+            color: var(--text-color);
+        }
+
+        /* TABLE STYLING */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-table td {
+            border: 1px solid var(--border-color);
+            padding: 4px 6px;
+            min-height: 20px;
+            background: #ffffff;
+            vertical-align: top;
+        }
+
+        .info-label {
+            font-weight: bold;
+            font-size: 7.5pt;
+            color: var(--muted-text-color);
+            display: block;
+            margin-bottom: 1px;
+        }
+
+        .info-value {
+            font-size: 8.5pt;
+            color: var(--text-color);
+            font-weight: normal;
+        }
+
+        /* VEHICLE DETAILS TABLE */
+        .vehicle-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .vehicle-table td {
+            border: 1px solid var(--border-color);
+            padding: 4px 6px;
+            min-height: 20px;
+            background: #ffffff;
+            vertical-align: top;
+        }
+
+        /* COMPLAINT TABLE */
+        .complaint-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .complaint-table th {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 6px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 8.5pt;
+            color: var(--text-color);
+        }
+
+        .complaint-table td {
+            border: 1px solid var(--border-color);
+            padding: 5px 6px;
+            font-size: 8pt;
+            min-height: 18px;
+        }
+
+        .complaint-table tbody tr:hover {
+            background: #f3f4f6;
+        }
+        .complaint-table tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        .complaint-table tbody tr.focus-row {
+            background: #fff7ed;
+            position: relative;
+        }
+        .complaint-table tbody tr.focus-row:hover {
+            background: #ffedd5;
+        }
+        .complaint-table tbody tr.focus-row .col-description {
+            font-weight: 600;
+        }
+
+        .category-header {
+            background: var(--accent-color);
+            color: #fff;
+            font-weight: bold;
+            padding: 5px 6px;
+            font-size: 8.5pt;
+        }
+
+        .category-mnt { background: #2563eb; }
+        .category-eng { background: #ea580c; }
+        .category-pwt { background: #0891b2; }
+        .category-bdy { background: #7c3aed; }
+        .category-ela { background: #059669; }
+
+        .col-code { width: 120px; font-weight: 600; }
+        .col-description { width: auto; }
+        .col-remarks-wide { width: 180px; font-size: 7pt; color: var(--muted-text-color); }
+
+        /* ANNEXURE */
+        .annexure-box {
+            border: 1px solid var(--border-color);
+            padding: 6px;
+            min-height: 35px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            background: var(--surface-color);
+        }
+
+        .annexure-title {
+            font-weight: bold;
+            font-size: 8.5pt;
+            margin-bottom: 3px;
+        }
+
+        /* PREVIOUS CS TABLES */
+        .previous-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+        }
+
+        .previous-table th {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            padding: 5px 6px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 8pt;
+            color: var(--text-color);
+        }
+
+        .previous-table td {
+            border: 1px solid var(--border-color);
+            padding: 5px 6px;
+            font-size: 7.5pt;
+            min-height: 16px;
+        }
+
+        /* FOOTER */
+        .document-footer {
+            margin-top: 14px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+            font-size: 6.5pt;
+            color: var(--muted-text-color);
+            text-align: center;
+        }
+
+        .signature-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .signature-box {
+            text-align: center;
+        }
+
+        .signature-line {
+            border-top: 1px solid var(--text-color);
+            margin-top: 25px;
+            padding-top: 2px;
+            font-size: 7.5pt;
+            font-weight: bold;
+        }
+
+        .highlight-red {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .fuel-progress { 
+            display: flex; 
+            align-items: center; 
+            gap: 4px; 
+            margin-top: 1px; 
+        }
+        .fuel-e, .fuel-f { 
+            font-size: 6.5pt; 
+            color: var(--muted-text-color); 
+        }
+        .fuel-track { 
+            flex: 1; 
+            height: 5px; 
+            background: var(--border-color); 
+            border-radius: 999px; 
+            position: relative; 
+        }
+        .fuel-fill { 
+            height: 100%; 
+            background: var(--accent-color); 
+            border-radius: 999px; 
+            width: 0%; 
+        }
+        .fuel-ticks { 
+            position: absolute; 
+            inset: 0; 
+        }
+        .fuel-tick { 
+            position: absolute; 
+            top: -2px; 
+            width: 1px; 
+            height: 9px; 
+            background: var(--muted-text-color); 
+        }
+
+        /* Compact inline label-value styling */
+        .inline-label-value {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .inline-label {
+            font-weight: bold;
+            font-size: 7.5pt;
+            color: var(--muted-text-color);
+            white-space: nowrap;
+        }
+        .inline-value {
+            font-size: 8.5pt;
+            color: var(--text-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            .a4-page {
+                width: 100%;
+                padding: 6mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="a4-page">
+        <!-- HEADER -->
+        <header class="document-header">
+            <h1 class="company-name" id="company-name"> <em>multibrand <span class="red-accent">WORKSHOP</span></em> LTD</h1>
+            <p class="company-address" id="company-address">417-418/A, Tejgaon I/A, Dhaka 1208 | Tel: +8801701-224 444 | info@multibrand-bd.com</p>
+            <h2 class="document-title" id="document-title"><span class="red-accent">COMPLAIN</span> | REQUESTED SERVICE SHEET <span class="red-accent"># 148601</span></h2>
+        </header>
+        
+        <!-- SECTION 1: CUSTOMER & VEHICLE INFORMATION -->
+        <div class="section-classic">
+            <div class="section-title">
+                SECTION 1 — CUSTOMER &amp; VEHICLE INFORMATION
+            </div>
+            
+            <!-- Basic Job Info Table -->
+            <table class="info-table">
+                <tr>
+                    <td style="width: 25%"><span class="info-label">JC No:</span> <span class="info-value">132496</span></td>
+                    <td style="width: 25%"><span class="info-label">Receive Time:</span> <span class="info-value">2024-04-04 11:45</span></td>
+                    <td style="width: 25%"><span class="info-label">Car ID:</span> <span class="info-value">83021-DM-GHA-14-2028</span></td>
+                    <td style="width: 25%"><span class="info-label">Received By:</span> <span class="info-value">Kamrul Hasan</span></td>
+                </tr>
+            </table>
+            
+            <!-- Customer Details Table -->
+            <table class="info-table">
+                <tr>
+                    <td colspan="2"><span class="info-label">Customer Name:</span> <span class="info-value">Development Design Consultants Ltd. (DDCL)</span></td>
+                    <td colspan="2"><span class="info-label">Customer Email:</span> <span class="info-value">ddcit@ddclbd.com</span></td>
+                </tr>
+                <tr>
+                  <td style="width: 25%"><span class="info-label">User Name &amp; Number:</span> <span class="info-value">Abdul Wadud – 01730357699</span></td>
+                    <td style="width: 25%"><span class="info-label">Vehicle Location:</span> <span class="info-value">MS=>Bay A-03</span></td>
+                    <td style="width: 25%"><span class="info-label">TO Name &amp; Number:</span> <span class="info-value">Farid Ahmed – 01917611680</span></td>
+                    <td><span class="info-label">Requested Delivery:</span> <span class="info-value">2024-04-04 16:30</span></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><span class="info-label">Billing Address:</span> <span class="info-value">47, Mohakhali C/A, Dhaka 1212</span></td>
+                    <td colspan="2"><span class="info-label">Driver Name &amp; Number:</span> <span class="info-value">Ibrahim – 01730498025</span></td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2"><span class="info-label">Introduced By:</span> <span class="info-value">ED Sir</span></td>
+                    <td colspan="2"><span class="info-label">Document Status:</span> <span class="info-value">No Documents</span></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="info-label">Fuel Main:</span> <span class="info-value">75%</span>
+                        <div class="fuel-progress">
+                            <span class="fuel-e">E</span>
+                            <div class="fuel-track">
+                                <div class="fuel-fill" style="width: 75%"></div>
+                                <div class="fuel-ticks">
+                                    <span class="fuel-tick" style="left:25%"></span>
+                                    <span class="fuel-tick" style="left:50%"></span>
+                                    <span class="fuel-tick" style="left:75%"></span>
+                                    <span class="fuel-tick" style="left:100%"></span>
+                                </div>
+                            </div>
+                            <span class="fuel-f">F</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="info-label">Fuel Sub:</span> <span class="info-value">50%</span>
+                        <div class="fuel-progress">
+                            <span class="fuel-e">E</span>
+                            <div class="fuel-track">
+                                <div class="fuel-fill" style="width: 50%"></div>
+                                <div class="fuel-ticks">
+                                    <span class="fuel-tick" style="left:25%"></span>
+                                    <span class="fuel-tick" style="left:50%"></span>
+                                    <span class="fuel-tick" style="left:75%"></span>
+                                    <span class="fuel-tick" style="left:100%"></span>
+                                </div>
+                            </div>
+                            <span class="fuel-f">F</span>
+                        </div>
+                    </td>
+                    <td colspan="2"><span class="info-label">CNG / LPG:</span> <span class="info-value">N/A</span></td>
+                </tr>
+            </table>
+            
+            <!-- Vehicle Details Table -->
+            <table class="vehicle-table">
+                <tr>
+                    <td colspan="2"><span class="info-label">Brand & Model - Year:</span> <span class="info-value">Toyota & Crown - 2013</span></td>
+                    <td colspan="2"><span class="info-label">V.Reg No:</span> <span class="info-value">DM-GA-17-8239</span></td>
+                    <!-- <td style="width: 33%"><span class="info-label">Model:</span> <span class="info-value">Crown</span></td> -->
+                    <!-- <td style="width: 34%"><span class="info-label">Year:</span> <span class="info-value">2013</span></td> -->
+                </tr>
+                <tr>
+                    <!-- <td colspan="2"><span class="info-label">V.Reg No:</span> <span class="info-value">DM-GA-17-8239</span></td> -->
+                    <td style="width: 33%"><span class="info-label">Chassis No:</span> <span class="info-value">AWS210-6035566</span></td>
+                    <td style="width: 33%"><span class="info-label">Engine Code &amp; No:</span> <span class="info-value">2AR – 943704</span></td>
+                    <td style="width: 33%"><span class="info-label">CC:</span> <span class="info-value">2494</span></td>
+                </tr>
+                
+                <tr>
+                    <td style="width: 33%"><span class="info-label">Transmission:</span> <span class="info-value">Auto / CVT</span></td>
+                    <td style="width: 33%"><span class="info-label">Emission Type:</span> <span class="info-value">Euro 4</span></td>
+                    <td style="width: 33%"><span class="info-label">Wheel Type:</span> <span class="info-value">2WD</span></td>
+                    
+                </tr>
+                <tr>
+                    <td style="width: 33%"><span class="info-label">Fuel / Energy Type:</span> <span class="info-value">Hybrid + Gasoline</span></td>
+                    <td style="width: 33%"><span class="info-label">Fuel System:</span> <span class="info-value">DGI</span></td>
+                    <td style="width: 33%"><span class="info-label">Engine Modified:</span> <span class="info-value">No</span></td>
+                    
+                </tr>
+                <tr>
+                    <td style="width: 33%"><span class="info-label">ODO (KM):</span> <span class="info-value highlight-red">173,898 km</span></td>
+                    <td style="width: 33%"><span class="info-label">Transmission Modified:</span> <span class="info-value">No</span></td>
+                    <td style="width: 33%"><span class="info-label">VIN Modified:</span> <span class="info-value">No</span></td>
+                    
+                </tr>
+                <tr>
+                    <td colspan="1"><span class="info-label">Specialized Work:</span> <span class="info-value highlight-red">Yes (See Below)</span></td>
+                    <td colspan="3">
+                        <span class="info-label">Specialized Work Details:</span> 
+                        <span class="info-value highlight-red">EGR OFF | Catalyst Removed | New Engine Number | New Transmission Name | New VIN Number</span>
+                    </td>
+                </tr>
+                <tr>
+                    
+                </tr>
+            </table>
+        </div>
+        
+        <!-- SECTION 2: CUSTOMER COMPLAINTS -->
+        <div class="section-title">
+            SECTION 2 — CUSTOMER COMPLAINTS (CATEGORY-WISE)
+        </div>
+        
+        <!-- Maintenance Category -->
+        <table class="complaint-table">
+            <thead>
+                <tr class="category-header category-mnt">
+                    <th colspan="3">1. MAINTENANCE – MNT</th>
+                </tr>
+                <tr>
+                    <th class="col-code">Code</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-remarks-wide">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-code">148601-MNT001</td>
+                    <td class="col-description">Engine General Service (W) | Symptoms: …………………</td>
+                    <td class="col-remarks-wide">If additional complaint is added, receiver name + datetime auto displayed: Sadman [11/1/2025 6:47 PM]</td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-MNT002</td>
+                    <td class="col-description">CVT Fluid Check (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-MNT003</td>
+                    <td class="col-description">All Fluid and Filter Check (Check)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-MNT004</td>
+                    <td class="col-description">Dual Clutch Fluid Check (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Engine Category -->
+        <table class="complaint-table">
+            <thead>
+                <tr class="category-header category-eng">
+                    <th colspan="3">2. ENGINE – ENG</th>
+                </tr>
+                <tr>
+                    <th class="col-code">Code</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-remarks-wide">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-code">148601-ENG001</td>
+                    <td class="col-description">Engine Knocking in Fuel (R/W Check, [CS-123456])</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ENG002</td>
+                    <td class="col-description">Spark Plug Check (Check)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ENG003</td>
+                    <td class="col-description">MIL Sign Shown (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ENG004</td>
+                    <td class="col-description">Radiator Coolant Change (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ENG005</td>
+                    <td class="col-description">Engine Oil Consumption High (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Powertrain Category -->
+        <table class="complaint-table">
+            <thead>
+                <tr class="category-header category-pwt">
+                    <th colspan="3">3. POWERTRAIN – PWT</th>
+                </tr>
+                <tr>
+                    <th class="col-code">Code</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-remarks-wide">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-code">148601-PWT001</td>
+                    <td class="col-description">Brake System Service (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-PWT002</td>
+                    <td class="col-description">Steering Feeling Jam (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr class="focus-row">
+                    <td class="col-code">148601-PWT003</td>
+                    <td class="col-description">Make a Noise at Rough Road (Front &amp; Rear Side) <span style="font-style: italic; font-size: 1.5em;">[M/C]</span> (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-PWT004</td>
+                    <td class="col-description">Gear Make Traction at Cold Condition (Check) <span style="font-style: italic; font-size: 1em;font-weight: bold;">[Additional] | Sadman [11/1/2025 6:47 PM]</span></td>
+                    <td class="col-remarks-wide">Customer found truction on cold stage.</td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-PWT005</td>
+                    <td class="col-description">Car LHS Turn Tendency (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Body Category -->
+        <table class="complaint-table">
+            <thead>
+                <tr class="category-header category-bdy">
+                    <th colspan="3">4. BODY – BDY</th>
+                </tr>
+                <tr>
+                    <th class="col-code">Code</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-remarks-wide">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-code">148601-BDY001</td>
+                    <td class="col-description">Wiper Blade Change (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-BDY002</td>
+                    <td class="col-description">Full Body Interior &amp; Exterior Polish (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-BDY003</td>
+                    <td class="col-description">Door Lock Unlock Problem (Check)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-BDY004</td>
+                    <td class="col-description">Full Body Dent Paint (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-BDY005</td>
+                    <td class="col-description">Sliding Door Operation Trouble (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- Electrical Category -->
+        <table class="complaint-table">
+            <thead>
+                <tr class="category-header category-ela">
+                    <th colspan="3">5. ELECTRICAL, ELECTRONIC &amp; A/C – ELA</th>
+                </tr>
+                <tr>
+                    <th class="col-code">Code</th>
+                    <th class="col-description">Description</th>
+                    <th class="col-remarks-wide">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-code">148601-ELA001</td>
+                    <td class="col-description">A/C Not Cool Suddenly (Check)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ELA002</td>
+                    <td class="col-description">Hybrid Battery Check (Check)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ELA003</td>
+                    <td class="col-description">Head Light Not Work (R/W, [CS-123450])</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ELA004</td>
+                    <td class="col-description">DVD Display Not Work (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ELA005</td>
+                    <td class="col-description">SRS Sign Shown (Est)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+                <tr>
+                    <td class="col-code">148601-ELA006</td>
+                    <td class="col-description">DPF Sign Shown (W)</td>
+                    <td class="col-remarks-wide"></td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- ANNEXURE -->
+        <div class="section-title">
+            🗂 ANNEXURE (DURING COMPLAINT TAKE)
+        </div>
+        <div class="annexure-box">
+            <div class="annexure-title">
+                Additional Notes / Observations:
+            </div>
+            <p style="margin: 0; color: #666; font-size: 7.5pt;">_______________________________________________________________________________________</p>
+            <p style="margin: 0; color: #666; font-size: 7.5pt;">_______________________________________________________________________________________</p>
+        </div>
+        
+        <!-- PREVIOUS CS INFORMATION -->
+        <div class="section-title">
+            📘 PREVIOUS CS # INFORMATION
+        </div>
+        <table class="previous-table">
+            <thead>
+                <tr>
+                    <th>Last Received Date</th>
+                    <th>Last Delivery Date</th>
+                    <th>Received After (Days)</th>
+                    <th>Received After (KM/Miles)</th>
+                    <th>Total Complain</th>
+                    <th>Odo (KM/Miles)</th>
+                    <th>Feeder</th>
+                    <th>Head GL Name</th>
+                    <th>QC Status</th>
+                    <th>Head TL Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2022-07-23 11:06</td>
+                    <td>2022-07-24 11:40</td>
+                    <td>1 years 8 months 12 days</td>
+                    <td>32,568</td>
+                    <td>1</td>
+                    <td>141330 KM</td>
+                    <td>Sourov Mahmud</td>
+                    <td>Zubayer Rahman Tareq (MBW.CSE54-598)</td>
+                    <td>No</td>
+                    <td>Alomgir Kazi</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- PREVIOUS CS FEEDBACK -->
+        <div class="section-title">
+            📝 PREVIOUS CS # FEEDBACK
+        </div>
+        <table class="previous-table">
+            <thead>
+                <tr>
+                    <th>Feedback Received Date</th>
+                    <th>Feedback from Owner</th>
+                    <th>Feedback from TO</th>
+                    <th>Feedback from Driver</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                    <td>—</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- SIGNATURE SECTION -->
+        <div class="signature-row">
+            <div class="signature-box">
+                <div class="signature-line">
+                    Customer Signature
+                </div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">
+                    Service Advisor
+                </div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">
+                    Technician
+                </div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">
+                    QC Inspector
+                </div>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <footer class="document-footer" id="footer-note">
+            <p style="margin: 0;">This is a computer-generated document. Please verify all information before service commencement.</p>
+            <p style="margin: 2px 0 0 0;">For queries, contact: info@multibrand-bd.com| Tel: +8801701-224 444</p>
+        </footer>
+    </div>
+    
+    <script>
+        // JavaScript code remains the same as in the original
+        const defaultConfig = {
+            background_color: "#ffffff",
+            surface_color: "#f0f0f0",
+            text_color: "#000000",
+            accent_color: "#c41e3a",
+            border_color: "#333333",
+            font_family: "Arial",
+            font_size: 9,
+            document_title: "COMPLAIN SHEET & REQUESTED SERVICE SHEET",
+            company_name: "TOYOTA SERVICE CENTER",
+            company_address: "123 Auto Plaza, Dhaka 1212 | Tel: +880-2-12345678 | service@toyota.com",
+            footer_note: "This is a computer-generated document. Please verify all information before service commencement."
+        };
+
+        async function onConfigChange(config) {
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseFontStack = "'Helvetica', sans-serif";
+            const baseSize = config.font_size || defaultConfig.font_size;
+            
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+            document.body.style.fontSize = `${baseSize}pt`;
+            
+            const bgColor = config.background_color || defaultConfig.background_color;
+            document.querySelector('.a4-page').style.background = bgColor;
+            document.body.style.background = bgColor;
+            
+            const surfaceColor = config.surface_color || defaultConfig.surface_color;
+            const sectionTitles = document.querySelectorAll('.section-title');
+            sectionTitles.forEach(title => {
+                title.style.background = surfaceColor;
+            });
+            
+            const textColor = config.text_color || defaultConfig.text_color;
+            document.body.style.color = textColor;
+            
+            const accentColor = config.accent_color || defaultConfig.accent_color;
+            const redAccents = document.querySelectorAll('.red-accent, .highlight-red');
+            redAccents.forEach(el => {
+                el.style.color = accentColor;
+            });
+            
+            const borderColor = config.border_color || defaultConfig.border_color;
+            const documentHeader = document.querySelector('.document-header');
+            documentHeader.style.borderBottom = `2px solid ${borderColor}`;
+
+            document.documentElement.style.setProperty('--bg-color', bgColor);
+            document.documentElement.style.setProperty('--surface-color', surfaceColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--accent-color', accentColor);
+            document.documentElement.style.setProperty('--border-color', borderColor);
+            
+            const companyNameEl = document.getElementById('company-name');
+            if (companyNameEl) {
+                companyNameEl.textContent = config.company_name || defaultConfig.company_name;
+                companyNameEl.style.fontSize = `${baseSize * 1.78}pt`;
+            }
+            
+            const companyAddressEl = document.getElementById('company-address');
+            if (companyAddressEl) {
+                companyAddressEl.textContent = config.company_address || defaultConfig.company_address;
+                companyAddressEl.style.fontSize = `${baseSize * 0.89}pt`;
+            }
+            
+            const documentTitleEl = document.getElementById('document-title');
+            if (documentTitleEl) {
+                const titleText = config.document_title || defaultConfig.document_title;
+                const parts = titleText.split('&');
+                if (parts.length > 1) {
+                    documentTitleEl.innerHTML = `<span class="red-accent">${parts[0].trim()}</span> & ${parts[1].trim()}`;
+                } else {
+                    documentTitleEl.innerHTML = `<span class="red-accent">${titleText}</span>`;
+                }
+                documentTitleEl.style.fontSize = `${baseSize * 1.44}pt`;
+            }
+            
+            const footerNoteEl = document.getElementById('footer-note');
+            if (footerNoteEl) {
+                const footerText = config.footer_note || defaultConfig.footer_note;
+                footerNoteEl.innerHTML = `
+                    <p style="margin: 0;">${footerText}</p>
+                    <p style="margin: 2px 0 0 0;">For queries, contact: service@toyota.com | +880-2-12345678</p>
+                `;
+            }
+            
+            const infoLabels = document.querySelectorAll('.info-label');
+            infoLabels.forEach(label => {
+                label.style.fontSize = `${baseSize * 0.83}pt`;
+            });
+            
+            const infoValues = document.querySelectorAll('.info-value');
+            infoValues.forEach(value => {
+                value.style.fontSize = `${baseSize}pt`;
+            });
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.surface_color || defaultConfig.surface_color,
+                        set: (value) => {
+                            config.surface_color = value;
+                            window.elementSdk.setConfig({ surface_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.accent_color || defaultConfig.accent_color,
+                        set: (value) => {
+                            config.accent_color = value;
+                            window.elementSdk.setConfig({ accent_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.border_color || defaultConfig.border_color,
+                        set: (value) => {
+                            config.border_color = value;
+                            window.elementSdk.setConfig({ border_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["document_title", config.document_title || defaultConfig.document_title],
+                ["company_name", config.company_name || defaultConfig.company_name],
+                ["company_address", config.company_address || defaultConfig.company_address],
+                ["footer_note", config.footer_note || defaultConfig.footer_note]
+            ]);
+        }
+
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+</body>
+</html>
