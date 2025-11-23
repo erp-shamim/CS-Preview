@@ -199,7 +199,7 @@
         .category-bdy { background: #7c3aed; }
         .category-ela { background: #059669; }
 
-        .col-code { width: 120px; font-weight: 600; }
+        .col-code { width: 80px; font-weight: 600; }
         .col-description { width: auto; }
         .col-remarks-wide { width: 180px; font-size: 7pt; color: var(--muted-text-color); }
 
